@@ -28,15 +28,17 @@ def run():
     # Le hero, un carré noir
     hero = pg.Rect(SCREEN_SIZE[0]/2 - HERO_SIZE/2, SCREEN_SIZE[1]/2 - HERO_SIZE/2, HERO_SIZE, HERO_SIZE)
     # L ennemi, un carré rouge
-    monster = pg.Rect(0, 0, MONSTER_SIZE, MONSTER_SIZE)
+    monsters = [pg.Rect(0, 0, MONSTER_SIZE, MONSTER_SIZE),
+        pg.Rect(640, 480, MONSTER_SIZE, MONSTER_SIZE)]
 
     while True:
-        # exit
-        if pg.event.get(pg.QUIT): break
         # events queue
         pg.event.pump()
         # mouvements
         keys = pg.key.get_pressed()
+
+        # exit
+        if pg.event.get(pg.QUIT): break
 
         if game_over:
             screen.fill(BLACK)
@@ -51,7 +53,8 @@ def run():
                 # Le hero, un carré noir
                 hero = pg.Rect(SCREEN_SIZE[0]/2 - HERO_SIZE/2, SCREEN_SIZE[1]/2 - HERO_SIZE/2, HERO_SIZE, HERO_SIZE)
                 # L ennemi, un carré rouge
-                monster = pg.Rect(0, 0, MONSTER_SIZE, MONSTER_SIZE)
+                monsters = [pg.Rect(0, 0, MONSTER_SIZE, MONSTER_SIZE),
+                    pg.Rect(640, 480, MONSTER_SIZE, MONSTER_SIZE)]
                 game_over = False
 
             
@@ -68,24 +71,27 @@ def run():
             if keys[pg.K_RIGHT]: hero.move_ip(HERO_SPEED, 0)
 
             # monster moves X
-            if hero.x > monster.x:
-                monster.move_ip(MONSTER_SPEED, 0)
-            elif hero.x < monster.x:
-                monster.move_ip(-MONSTER_SPEED, 0)
+            for monster in monsters:
+                if hero.x > monster.x:
+                    monster.move_ip(MONSTER_SPEED, 0)
+                elif hero.x < monster.x:
+                    monster.move_ip(-MONSTER_SPEED, 0)
 
-            if hero.y > monster.y:
-                monster.move_ip(0, MONSTER_SPEED)
-            elif hero.y < monster.y:
-                monster.move_ip(0, -MONSTER_SPEED)
+                if hero.y > monster.y:
+                    monster.move_ip(0, MONSTER_SPEED)
+                elif hero.y < monster.y:
+                    monster.move_ip(0, -MONSTER_SPEED)
 
-            # monster kill
-            if (monster.colliderect(hero)):
-                game_over = True
+                # monster kill
+                if (monster.colliderect(hero)):
+                    game_over = True
+
+                # ne pas sortir du cadre
+                monster.clamp_ip(screen.get_rect())
 
             
             # ne pas sortir du cadre
             hero.clamp_ip(screen.get_rect())
-            monster.clamp_ip(screen.get_rect())
             # afficher le fond et le hero
             screen.fill(BLACK)
             # Timer
@@ -95,7 +101,8 @@ def run():
             # hero
             pg.draw.rect(screen, WHITE, hero)
             # monster
-            pg.draw.rect(screen, RED, monster)
+            for monster in monsters:
+                pg.draw.rect(screen, RED, monster)
         
         
         # refresh
