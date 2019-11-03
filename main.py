@@ -1,5 +1,6 @@
 import pygame as pg
 import sys
+from random import randrange
 
 # constants
 SCREEN_SIZE = (640, 480)
@@ -9,8 +10,10 @@ WHITE = (255, 255, 255)
 RED = (255, 0, 0)
 HERO_SPEED = 5
 HERO_SIZE = 40
-MONSTER_SIZE = 40
-MONSTER_SPEED = 3
+MONSTER_SIZE_MIN = 10
+MONSTER_SIZE_MAX = 40
+MONSTER_SPEED = 2
+MONSTERS_MAX = 6
 
 
 def run():
@@ -28,8 +31,11 @@ def run():
     # Le hero, un carré noir
     hero = pg.Rect(SCREEN_SIZE[0]/2 - HERO_SIZE/2, SCREEN_SIZE[1]/2 - HERO_SIZE/2, HERO_SIZE, HERO_SIZE)
     # L ennemi, un carré rouge
-    monsters = [pg.Rect(0, 0, MONSTER_SIZE, MONSTER_SIZE),
-        pg.Rect(640, 480, MONSTER_SIZE, MONSTER_SIZE)]
+    monsters = []
+    for i in range(0, randrange(MONSTERS_MAX)):
+        size = randrange(MONSTER_SIZE_MIN, MONSTER_SIZE_MAX)
+        monsters.append(pg.Rect(randrange(SCREEN_SIZE[0]), randrange(SCREEN_SIZE[1]), size, size))
+
 
     while True:
         # events queue
@@ -38,7 +44,7 @@ def run():
         keys = pg.key.get_pressed()
 
         # exit
-        if pg.event.get(pg.QUIT): break
+        if pg.event.get(pg.QUIT) or keys[pg.K_ESCAPE]: break
 
         if game_over:
             screen.fill(BLACK)
@@ -53,8 +59,10 @@ def run():
                 # Le hero, un carré noir
                 hero = pg.Rect(SCREEN_SIZE[0]/2 - HERO_SIZE/2, SCREEN_SIZE[1]/2 - HERO_SIZE/2, HERO_SIZE, HERO_SIZE)
                 # L ennemi, un carré rouge
-                monsters = [pg.Rect(0, 0, MONSTER_SIZE, MONSTER_SIZE),
-                    pg.Rect(640, 480, MONSTER_SIZE, MONSTER_SIZE)]
+                monsters = []
+                for i in range(0, randrange(MONSTERS_MAX)):
+                    size = randrange(MONSTER_SIZE_MIN, MONSTER_SIZE_MAX)
+                    monsters.append(pg.Rect(randrange(SCREEN_SIZE[0]), randrange(SCREEN_SIZE[1]), size, size))
                 game_over = False
 
             
@@ -69,6 +77,9 @@ def run():
             if keys[pg.K_DOWN]: hero.move_ip(0, HERO_SPEED)
             if keys[pg.K_LEFT]: hero.move_ip(-HERO_SPEED, 0)
             if keys[pg.K_RIGHT]: hero.move_ip(HERO_SPEED, 0)
+
+            # suicide
+            if keys[pg.K_s]: game_over = True
 
             # monster moves X
             for monster in monsters:
