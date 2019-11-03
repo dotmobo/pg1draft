@@ -6,36 +6,73 @@ SCREEN_SIZE = (640, 480)
 FPS = 60
 BLACK = (0, 0, 0)
 WHITE = (255, 255, 255)
-SPEED = 5
+RED = (255, 0, 0)
+HERO_SPEED = 5
 HERO_SIZE = 40
+MONSTER_SIZE = 40
+MONSTER_SPEED = 3
 
 
 def run():
     # Affichage de la fenêtre
     screen = pg.display.set_mode(SCREEN_SIZE)
+    # Font
+    font = pg.font.SysFont(None, 32)
     # Clock
     clock = pg.time.Clock()
+    # Timer
+    start_time = pg.time.get_ticks()
     # Le hero, un carré noir
     hero = pg.Rect(SCREEN_SIZE[0]/2 - HERO_SIZE/2, SCREEN_SIZE[1]/2 - HERO_SIZE/2, HERO_SIZE, HERO_SIZE)
+    # L ennemi, un carré rouge
+    monster = pg.Rect(0, 0, MONSTER_SIZE, MONSTER_SIZE)
 
     while True:
         # exit
         if pg.event.get(pg.QUIT): break
-        # events queuee
+        # events queue
         pg.event.pump()
+
+        # timer
+        counting_time = pg.time.get_ticks() - start_time
 
         # mouvements
         keys = pg.key.get_pressed()
-        if keys[pg.K_UP]: hero.move_ip(0, -SPEED)
-        if keys[pg.K_DOWN]: hero.move_ip(0, SPEED)
-        if keys[pg.K_LEFT]: hero.move_ip(-SPEED, 0)
-        if keys[pg.K_RIGHT]: hero.move_ip(SPEED, 0)
+        if keys[pg.K_UP]: hero.move_ip(0, -HERO_SPEED)
+        if keys[pg.K_DOWN]: hero.move_ip(0, HERO_SPEED)
+        if keys[pg.K_LEFT]: hero.move_ip(-HERO_SPEED, 0)
+        if keys[pg.K_RIGHT]: hero.move_ip(HERO_SPEED, 0)
+
+        # monster moves X
+        if hero.x > monster.x:
+            monster.move_ip(MONSTER_SPEED, 0)
+        elif hero.x < monster.x:
+            monster.move_ip(-MONSTER_SPEED, 0)
+
+        if hero.y > monster.y:
+            monster.move_ip(0, MONSTER_SPEED)
+        elif hero.y < monster.y:
+            monster.move_ip(0, -MONSTER_SPEED)
+
+        # monster kill
+        if (monster.colliderect(hero)):
+            break
+
 
         # ne pas sortir du cadre
         hero.clamp_ip(screen.get_rect())
+        monster.clamp_ip(screen.get_rect())
         # afficher le fond et le hero
         screen.fill(BLACK)
+        # Timer
+        counting_text = font.render('SCORE: {counting_time}'.format(counting_time=counting_time), 1, (255,255,255))
+        counting_rect = counting_text.get_rect()
+        screen.blit(counting_text, counting_rect)
+        # hero
         pg.draw.rect(screen, WHITE, hero)
+        # monster
+        pg.draw.rect(screen, RED, monster)
+        # refresh
         pg.display.flip()
         # 60 fps
         clock.tick(FPS)
