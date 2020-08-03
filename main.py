@@ -13,6 +13,7 @@ HERO_SIZE = 40
 MONSTER_SIZE_MIN = 10
 MONSTER_SIZE_MAX = 40
 MONSTER_SPEED = 2
+MONSTERS_MIN = 2
 MONSTERS_MAX = 6
 
 
@@ -32,7 +33,7 @@ def run():
     hero = pg.Rect(SCREEN_SIZE[0]/2 - HERO_SIZE/2, SCREEN_SIZE[1]/2 - HERO_SIZE/2, HERO_SIZE, HERO_SIZE)
     # L ennemi, un carré rouge
     monsters = []
-    for i in range(0, randrange(MONSTERS_MAX)):
+    for i in range(0, randrange(MONSTERS_MIN, MONSTERS_MAX)):
         size = randrange(MONSTER_SIZE_MIN, MONSTER_SIZE_MAX)
         monsters.append(pg.Rect(randrange(SCREEN_SIZE[0]), randrange(SCREEN_SIZE[1]), size, size))
 
@@ -60,7 +61,7 @@ def run():
                 hero = pg.Rect(SCREEN_SIZE[0]/2 - HERO_SIZE/2, SCREEN_SIZE[1]/2 - HERO_SIZE/2, HERO_SIZE, HERO_SIZE)
                 # L ennemi, un carré rouge
                 monsters = []
-                for i in range(0, randrange(MONSTERS_MAX)):
+                for i in range(0, randrange(MONSTERS_MIN, MONSTERS_MAX)):
                     size = randrange(MONSTER_SIZE_MIN, MONSTER_SIZE_MAX)
                     monsters.append(pg.Rect(randrange(SCREEN_SIZE[0]), randrange(SCREEN_SIZE[1]), size, size))
                 game_over = False
