@@ -12,3 +12,7 @@ python main.py
 ## Gameplay
 
 Just survive !
+
+## Screenshot
+
+![Image of Pg1dragt](screenshot.png)
